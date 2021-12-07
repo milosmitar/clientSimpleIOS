@@ -13,12 +13,14 @@ class Client {
     let connection: ClientConnection
     let host: NWEndpoint.Host
     let port: NWEndpoint.Port
+    let transferDelegate : TransferData?
 
-    init(host: String, port: UInt16) {
+    init(host: String, port: UInt16, transferDelegate: TransferData) {
         self.host = NWEndpoint.Host(host)
         self.port = NWEndpoint.Port(rawValue: port)!
+        self.transferDelegate = transferDelegate
         let nwConnection = NWConnection(host: self.host, port: self.port, using: .tcp)
-        connection = ClientConnection(nwConnection: nwConnection)
+        connection = ClientConnection(nwConnection: nwConnection, tranferDelegate: transferDelegate)
     }
 
     func start() {

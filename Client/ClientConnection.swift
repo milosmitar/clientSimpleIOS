@@ -13,9 +13,11 @@ class ClientConnection {
 
     let  nwConnection: NWConnection
     let queue = DispatchQueue(label: "Client connection Q")
+    var transferDataDelegate: TransferData?
 
-    init(nwConnection: NWConnection) {
+    init(nwConnection: NWConnection, tranferDelegate: TransferData) {
         self.nwConnection = nwConnection
+        self.transferDataDelegate = tranferDelegate
     }
 
     var didStopCallback: ((Error?) -> Void)? = nil
@@ -43,8 +45,9 @@ class ClientConnection {
     private func setupReceive() {
         nwConnection.receive(minimumIncompleteLength: 1, maximumLength: 251993) { (data, _, isComplete, error) in
             if let data = data, !data.isEmpty {
-                let message = String(data: data, encoding: .utf8)
-                print("connection did receive, data: \(data as NSData) string: \(message ?? "-" )")
+                self.transferDataDelegate?.onMessageReceive(data: data)
+//                let message = String(data: data, encoding: .utf8)
+//                print("connection did receive, data: \(data as NSData) string: \(message ?? "-" )")
             }
             if isComplete {
                 self.connectionDidEnd()
