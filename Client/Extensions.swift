@@ -2,7 +2,7 @@
 //  Extensions.swift
 //  Client
 //
-//  Created by vesko on 23.11.21..
+//  Created by tarmi on 23.11.21..
 //
 
 import Foundation
@@ -27,6 +27,9 @@ extension View {
         controller.view.removeFromSuperview()
         return image
     }
+    func cornerRadius(_ radius: CGFloat, corners: UIRectCorner) -> some View {
+        clipShape(RoundedCorner(radius: radius, corners: corners) )
+    }
 }
 
 extension UIView {
@@ -36,5 +39,15 @@ extension UIView {
         return renderer.image { rendererContext in
             layer.render(in: rendererContext.cgContext)
         }
+    }
+}
+struct RoundedCorner: Shape {
+
+    var radius: CGFloat = .infinity
+    var corners: UIRectCorner = .allCorners
+
+    func path(in rect: CGRect) -> Path {
+        let path = UIBezierPath(roundedRect: rect, byRoundingCorners: corners, cornerRadii: CGSize(width: radius, height: radius))
+        return Path(path.cgPath)
     }
 }

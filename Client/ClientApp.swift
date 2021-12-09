@@ -2,7 +2,7 @@
 //  ClientApp.swift
 //  Client
 //
-//  Created by vesko on 19.11.21..
+//  Created by tarmi on 19.11.21..
 //
 
 import SwiftUI

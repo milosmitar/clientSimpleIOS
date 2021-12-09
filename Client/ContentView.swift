@@ -2,7 +2,7 @@
 //  ContentView.swift
 //  Client
 //
-//  Created by vesko on 19.11.21..
+//  Created by tarmi on 19.11.21..
 //
 
 import SwiftUI
@@ -37,7 +37,7 @@ protocol TransferData{
 
 struct ContentView: View , TransferData{
     func onMessageReceive(data: Data) {
-        let message = Message(data: data)
+        let message = Message(data: data, recived: true)
         self.messages.append(message)
     }
     
@@ -55,12 +55,27 @@ struct ContentView: View , TransferData{
         NavigationView{
             VStack{
                 ScrollView(.vertical, showsIndicators: false){
-                    VStack(alignment: .center){
-                        ForEach(messages, id: \.self){ message in
-                            ChatRow(message: message)
+                    ScrollViewReader { (proxy: ScrollViewProxy) in
+                        VStack(alignment: .center){
+                            ForEach(messages, id: \.self){ message in
+                                //                            if message.recived {
+                                //                                ChatRow(message: message).padding(10).padding(.leading, 10).background(.blue).cornerRadius(15, corners: [.topLeft, .bottomRight, .topRight])
+                                //                                Spacer()
+                                ChatRow(message: message)
+                                //                            }else{
+                                //                                Spacer()
+                                //                                ChatRow(message: message).padding(10).padding(.trailing, 10).background(.blue).cornerRadius(15, corners: [.topLeft, .bottomLeft, .topRight])
+                                //                            }
+                            }.onChange(of: messages.count){ action in
+                                guard !messages.isEmpty else {return}
+                                withAnimation {
+                                    proxy.scrollTo(4, anchor: .center)
+                                }
+                                
+                            }
                         }
                     }
-                }
+                }.frame(width: 374)
                 HStack{
                     cameraButton
                     TextField("message...", text: $write)
@@ -70,34 +85,37 @@ struct ContentView: View , TransferData{
                     Image(systemName: "paperplane.fill").font(.system(size: 20))
                         .foregroundColor((self.write.count > 0) ? Color.blue : Color.gray).rotationEffect(.degrees(45))
                         .onTapGesture {
-                            initClient()
-                            sendMessage(data: self.write.data(using: .ascii) ?? Data())
+                            
+                            if !self.write.isEmpty {
+                                initClient()
+                                sendMessage(data: self.write.data(using: .ascii) ?? Data())
+                            }
                         }
-                }.padding()
+                }
                 
-            }
-            .sheet(isPresented: $showImagePicker, onDismiss: loadImage){
-                ImagePicker(image: self.$inputImage)
-            }
-            .navigationBarItems(leading: titleBar)
-//            VStack{
-//                ZStack{
-//                    image.resizable().scaledToFit().padding()
-//                }
-//                .onTapGesture {
-//                    self.showImagePicker = true
-//                }
-//            }
-//            .sheet(isPresented: $showImagePicker, onDismiss: loadImage){
-//                           ImagePicker(image: self.$inputImage)
-//                       }
+            }.padding()
+                .sheet(isPresented: $showImagePicker, onDismiss: loadImage){
+                    ImagePicker(image: self.$inputImage)
+                }
+                .navigationBarItems(leading: titleBar)
+            //            VStack{
+            //                ZStack{
+            //                    image.resizable().scaledToFit().padding()
+            //                }
+            //                .onTapGesture {
+            //                    self.showImagePicker = true
+            //                }
+            //            }
+            //            .sheet(isPresented: $showImagePicker, onDismiss: loadImage){
+            //                           ImagePicker(image: self.$inputImage)
+            //                       }
         }
     }
-//    func titleBar -> some View{
-//        HStack{
-////            Button(
-//        }
-//    }
+    //    func titleBar -> some View{
+    //        HStack{
+    ////            Button(
+    //        }
+    //    }
     
     private var titleBar: some View{
         HStack{
@@ -119,6 +137,9 @@ struct ContentView: View , TransferData{
             return
         }
         client.connection.send(data: data)
+        let message = Message(data: data, recived: false)
+        messages.append(message)
+        self.write = ""
     }
     func loadImage(){
         guard let inputImage = inputImage else {
@@ -134,15 +155,15 @@ struct ContentView: View , TransferData{
             client = Client(host: Commons.SERVER_IP, port: Commons.SERVER_PORT, transferDelegate: self)
             client?.start()
         }
-//        let uiimage = parent.image!.asUIImage()
-//        let cgImage:CGImage = context.createCGImage(parent.image!, from:
-//        cameraImage.extent)!     //cameraImage is grabbed from video frame
-//        image = UIImage.init(cgImage: cgImage)
-//        let data = UIImageJPEGRepresentation(image, 1.0)
-      
-//        client.connection.send(data: parent.image!.jpegData(compressionQuality: 0.5)!)
-        }
-  
+        //        let uiimage = parent.image!.asUIImage()
+        //        let cgImage:CGImage = context.createCGImage(parent.image!, from:
+        //        cameraImage.extent)!     //cameraImage is grabbed from video frame
+        //        image = UIImage.init(cgImage: cgImage)
+        //        let data = UIImageJPEGRepresentation(image, 1.0)
+        
+        //        client.connection.send(data: parent.image!.jpegData(compressionQuality: 0.5)!)
+    }
+    
 }
 
 struct ContentView_Previews: PreviewProvider {
@@ -180,11 +201,11 @@ class Coordinator: NSObject, UINavigationControllerDelegate, UIImagePickerContro
             guard let data = uiImage.jpegData(compressionQuality: 1.0) else{
                 return
             }
-//            initClient(server: "192.168.0.27", port: 9999)
+            //            initClient(server: "192.168.0.27", port: 9999)
         }
         parent.presentationMode.wrappedValue.dismiss()
     }
     
-   
+    
     
 }
