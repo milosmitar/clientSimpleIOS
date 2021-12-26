@@ -8,7 +8,7 @@
 import Foundation
 
 class Commons {
-//    static let SERVER_IP = "192.168.0.27"
-    static let SERVER_IP = "10.4.2.103"
+    static let SERVER_IP = "192.168.0.27"
+//    static let SERVER_IP = "10.4.2.103"
     static let SERVER_PORT : UInt16 = 9999
 }

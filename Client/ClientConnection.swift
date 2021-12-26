@@ -14,6 +14,8 @@ class ClientConnection {
     let  nwConnection: NWConnection
     let queue = DispatchQueue(label: "Client connection Q")
     var transferDataDelegate: TransferData?
+    var receivedDataCount: UInt32? = nil
+    var displayData = Data()
 
     init(nwConnection: NWConnection, tranferDelegate: TransferData) {
         self.nwConnection = nwConnection
@@ -42,12 +44,59 @@ class ClientConnection {
         }
     }
 
+//    private func setupReceive() {
+//        nwConnection.receive(minimumIncompleteLength: 1, maximumLength: 251993) { (data, _, isComplete, error) in
+//            if let data = data, !data.isEmpty {
+//                self.transferDataDelegate?.onMessageReceive(data: data)
+////                let message = String(data: data, encoding: .utf8)
+////                print("connection did receive, data: \(data as NSData) string: \(message ?? "-" )")
+//            }
+//            if isComplete {
+//                self.connectionDidEnd()
+//            } else if let error = error {
+//                self.connectionDidFail(error: error)
+//            } else {
+//                self.setupReceive()
+//            }
+//        }
+//    }
     private func setupReceive() {
         nwConnection.receive(minimumIncompleteLength: 1, maximumLength: 251993) { (data, _, isComplete, error) in
+            //            var inputStream: InputStream
             if let data = data, !data.isEmpty {
-                self.transferDataDelegate?.onMessageReceive(data: data)
-//                let message = String(data: data, encoding: .utf8)
-//                print("connection did receive, data: \(data as NSData) string: \(message ?? "-" )")
+                if self.receivedDataCount == nil {
+                    
+                    let count = data.withUnsafeBytes{
+                        [UInt8](UnsafeBufferPointer(start: $0, count: 4))
+                    }
+                    let cutingData = data
+                    let rawData = cutingData.dropFirst(4)
+
+                    let countData = Data(bytes: count)
+                    self.receivedDataCount = UInt32(bigEndian: countData.withUnsafeBytes { $0.pointee })
+
+                    self.displayData.append(rawData)
+
+                    if(self.receivedDataCount! > UInt32(data.count)){
+                    self.receivedDataCount = self.receivedDataCount! - UInt32(cutingData.count)
+                    }else{
+                        self.transferDataDelegate?.onMessageReceive(data: self.displayData)
+                        self.displayData = Data()
+                        self.receivedDataCount = nil
+                    }
+                    print(rawData)
+
+                }else if(self.receivedDataCount! > 0 && self.receivedDataCount! > UInt32(data.count)){
+
+                    self.displayData.append(data)
+                    self.receivedDataCount = self.receivedDataCount! - UInt32(data.count)
+                }else{
+                    self.displayData.append(data)
+                    self.transferDataDelegate?.onMessageReceive(data: self.displayData)
+                    self.displayData = Data()
+                    self.receivedDataCount = nil
+                }
+                
             }
             if isComplete {
                 self.connectionDidEnd()
@@ -60,30 +109,13 @@ class ClientConnection {
     }
 
     func send(data: Data) {
-        /*
-        var dataLength = data.count
-//        var dataToSend = Data(capacity: 4)
-//        var number = Data(bytes: &dataLength,
-//                             count:4)
-//        number.append(contentsOf: 4)
-//        var countData = dataToSend.count
-//
-//        data.from
-      
+        let dataLength = data.count
         
-//        dataToSend.append(data)
-        let value: Int32 = Int32(dataLength)
-        let array = withUnsafeBytes(of: value.bigEndian, Array.init)
-        print(array) // [255, 255, 250, 203]
-        var dataOfLength: Data = Data(array)
-        var rawData: Data = data
-        var dataToSend: Data = dataOfLength.append(rawData)
-        let byteArrayFromData: [UInt8] = [UInt8](data)
-         */
+        let value: UInt32 = UInt32(dataLength)
+        var finalData = withUnsafeBytes(of: value.bigEndian, Array.init)
+        finalData.append(contentsOf: data)
         
-        
-//        print("-----Send data length=== \(dataLength) and full data length ===\(dataToSend.count)")
-        nwConnection.send(content: data, completion: .contentProcessed( { error in
+        nwConnection.send(content: finalData, completion: .contentProcessed( { error in
             if let error = error {
                 self.connectionDidFail(error: error)
                 return
