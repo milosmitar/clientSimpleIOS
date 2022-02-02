@@ -10,6 +10,7 @@
 		38025FA5274D3DE1001EA8B2 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38025FA4274D3DE1001EA8B2 /* Extensions.swift */; };
 		381F9044274BF4BA00DAA84E /* Client.swift in Sources */ = {isa = PBXBuildFile; fileRef = 381F9043274BF4BA00DAA84E /* Client.swift */; };
 		381F9046274BF4DE00DAA84E /* ClientConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 381F9045274BF4DE00DAA84E /* ClientConnection.swift */; };
+		38725C2B27AAFBD20050C0AE /* ChatScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38725C2A27AAFBD20050C0AE /* ChatScrollView.swift */; };
 		3893FC7227578230004662FD /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3893FC7127578230004662FD /* Message.swift */; };
 		38A9C7CC275F6D9500793095 /* ChatRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38A9C7CB275F6D9500793095 /* ChatRow.swift */; };
 		38A9C7CE275F9D0200793095 /* Commons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38A9C7CD275F9D0200793095 /* Commons.swift */; };
@@ -47,6 +48,7 @@
 		38025FA4274D3DE1001EA8B2 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		381F9043274BF4BA00DAA84E /* Client.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Client.swift; sourceTree = "<group>"; };
 		381F9045274BF4DE00DAA84E /* ClientConnection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientConnection.swift; sourceTree = "<group>"; };
+		38725C2A27AAFBD20050C0AE /* ChatScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatScrollView.swift; sourceTree = "<group>"; };
 		3893FC7127578230004662FD /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		38A9C7CB275F6D9500793095 /* ChatRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRow.swift; sourceTree = "<group>"; };
 		38A9C7CD275F9D0200793095 /* Commons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Commons.swift; sourceTree = "<group>"; };
@@ -141,6 +143,7 @@
 				38025FA4274D3DE1001EA8B2 /* Extensions.swift */,
 				38A9C7CB275F6D9500793095 /* ChatRow.swift */,
 				38A9C7CD275F9D0200793095 /* Commons.swift */,
+				38725C2A27AAFBD20050C0AE /* ChatScrollView.swift */,
 			);
 			path = Client;
 			sourceTree = "<group>";
@@ -399,6 +402,7 @@
 				381F9046274BF4DE00DAA84E /* ClientConnection.swift in Sources */,
 				38EF9D322747FD2000F69FAE /* ContentView.swift in Sources */,
 				3893FC7227578230004662FD /* Message.swift in Sources */,
+				38725C2B27AAFBD20050C0AE /* ChatScrollView.swift in Sources */,
 				38A9C7CE275F9D0200793095 /* Commons.swift in Sources */,
 				38EF9D302747FD2000F69FAE /* ClientApp.swift in Sources */,
 				38A9C7CC275F6D9500793095 /* ChatRow.swift in Sources */,

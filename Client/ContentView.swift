@@ -54,28 +54,7 @@ struct ContentView: View , TransferData{
     var body: some View {
         NavigationView{
             VStack{
-                ScrollView(.vertical, showsIndicators: false){
-                    ScrollViewReader { (proxy: ScrollViewProxy) in
-                        VStack(alignment: .center){
-                            ForEach(messages, id: \.self){ message in
-                                //                            if message.recived {
-                                //                                ChatRow(message: message).padding(10).padding(.leading, 10).background(.blue).cornerRadius(15, corners: [.topLeft, .bottomRight, .topRight])
-                                //                                Spacer()
-                                ChatRow(message: message)
-                                //                            }else{
-                                //                                Spacer()
-                                //                                ChatRow(message: message).padding(10).padding(.trailing, 10).background(.blue).cornerRadius(15, corners: [.topLeft, .bottomLeft, .topRight])
-                                //                            }
-                            }.onChange(of: messages.count){ action in
-                                guard !messages.isEmpty else {return}
-                                withAnimation {
-                                    proxy.scrollTo(4, anchor: .center)
-                                }
-                                
-                            }
-                        }
-                    }
-                }.frame(width: 374)
+                ChatScrollView(messages: $messages)
                 HStack{
                     cameraButton
                     TextField("message...", text: $write)
